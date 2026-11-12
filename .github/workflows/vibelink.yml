@@ -1,0 +1,46 @@
+name: VibeLink Auto-Deploy
+
+on:
+  push:
+    branches: [ main, master ]
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  build-and-deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+
+      - name: Install Dependencies
+        run: |
+          if [ -f package-lock.json ]; then
+            npm ci
+          elif [ -f package.json ]; then
+            npm install
+          fi
+
+      - name: Build Project
+        run: |
+          if npm run | grep -q "build"; then
+            npm run build
+          fi
+          if [ ! -d "dist" ]; then
+            mkdir -p dist
+            cp index.html dist/ 2>/dev/null || true
+          fi
+
+      - name: Deploy to VibeLink (dist branch)
+        uses: JamesIves/github-pages-deploy-action@v4
+        with:
+          branch: dist
+          folder: dist
+          clean: true

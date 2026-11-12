@@ -1,0 +1,11 @@
+{
+  "name": "vibelink-demo-app",
+  "version": "1.0.0",
+  "private": true,
+  "scripts": {
+    "build": "mkdir -p dist && cp index.html dist/ 2>/dev/null || (mkdir dist && copy index.html dist\\index.html)"
+  },
+  "dependencies": {
+    "@libsql/client": "^0.18.0"
+  }
+}
